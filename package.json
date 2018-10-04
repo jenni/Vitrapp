@@ -1,0 +1,24 @@
+{
+  "name": "vitrapp",
+  "version": "1.0.0",
+  "description": "Vitrasa JavaScript API",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Vigo",
+    "autobus",
+    "bus",
+    "routes",
+    "Vitrasa"
+  ],
+  "author": "Jen Lijó & Borja Olivera",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "pug": "^2.0.3",
+    "strong-soap": "^1.13.1",
+    "xml-js": "^1.6.8"
+  }
+}
