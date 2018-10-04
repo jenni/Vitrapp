@@ -18,7 +18,7 @@ GET /stops
 Example:
 
 ``` http
-GET /info/stops
+GET /stops
 
 {
     "number": 310,
@@ -47,7 +47,7 @@ GET /stops/:latitude/:longitude
 Example:
 
 ``` http
-GET /info/stops/42.2178710901769/-8.74959517161433
+GET /stops/42.2178710901769/-8.74959517161433
 
 {
     "_attributes": {
@@ -72,13 +72,13 @@ GET /info/stops/42.2178710901769/-8.74959517161433
 ### Get stop information
 
 ``` http
-GET /info/:id
+GET stops/:id
 ```
 
 Example:
 
 ``` http
-GET /info/14901
+GET stops/14901
 
 {
     "id": "14901",
@@ -92,13 +92,13 @@ GET /info/14901
 ### Get stop estimations
 
 ``` http
-GET /info/:id/estimations
+GET stops/:id/estimations
 ```
 
 Example:
 
 ``` http
-GET /info/14901/estimations
+GET stops/14901/estimations
 
 {
     "stop": {

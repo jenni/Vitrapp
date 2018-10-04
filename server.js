@@ -6,15 +6,11 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-const info = require('./routes/info-routes');
+const info = require('./controllers/info-routes');
 
-app.use('/info', info);
+app.use('/stops', info);
 
 app.set('view engine', 'pug');
-
-app.get('/', (req, res) => {
-    res.render('index');
-});
 
 app.listen(port, () => {
     console.log(`Server up on port ${port}...`);

@@ -1,5 +1,5 @@
 const convert = require('xml-js');
-const stops = require('./stops');
+const stops = require('../stops');
 
 class Moeder {
     constructor(soap, url) {
@@ -17,16 +17,10 @@ class Moeder {
                 client.BuscarParadasIdParada({
                     IdParada: id
                 }, (err, xml) => {
-                    if (err) reject(err);
+                    if (err) reject(err, 'Something went weird');
 
-                    const res = JSON.parse(toJson(xml.BuscarParadasIdParadaResult));
-                    const stop = {
-                        id: res.Paradas.Parada._attributes.idparada,
-                        name: res.Paradas.Parada._attributes.nombre,
-                        distance: res.Paradas.Parada._attributes.distancia,
-                        latitude: res.Paradas.Parada._attributes.latitud,
-                        longitude: res.Paradas.Parada._attributes.longitud
-                    }
+                    const parsed = JSON.parse(toJson(xml.BuscarParadasIdParadaResult));
+                    const stop = flatStopInfo(parsed.Paradas.Parada);
 
                     resolve(stop);
                 });
@@ -40,14 +34,26 @@ class Moeder {
                 client.EstimacionParadaIdParada({
                     IdParada: id
                 }, (err, xml) => {
-                    if (err) throw new Error();
+                    if (err) reject(err);
 
                     const parsed = JSON.parse(toJson(xml.EstimacionParadaIdParadaResult));
+                    const estimations = parsed.NewDataSet.Estimaciones;
+                    const shaped = estimations.length ?
+                        estimations.map(estimation => flatBusInfo(estimation)) :
+                        estimations;
 
-                    resolve(parsed);
+                    resolve(shaped);
                 });
             });
         });
+    }
+
+    async getEstimationsByStopId(id) {
+        const stop = await this.getStopInfoByStopId(id);
+        const buses = await this.getEstimationByStopId(id);
+        stop['buses'] = buses;
+
+        return stop;
     }
 
     getNearbyStops(lat, lng) {
@@ -57,12 +63,13 @@ class Moeder {
                     Latitud: lat,
                     Longitud: lng
                 }, (err, xml) => {
-                    if (err) throw new Error();
+                    if (err) reject(err, 'Something went weird');
 
                     const parsed = JSON.parse(toJson(xml.BuscarParadasResult));
                     const stops = parsed.Paradas.Parada;
+                    const shaped = stops.map(stop => flatStopInfo(stop));
 
-                    resolve(stops);
+                    resolve(shaped);
                 });
             });
         });
@@ -70,5 +77,31 @@ class Moeder {
 }
 
 const toJson = (xml) => convert.xml2json(xml, { compact: true, spaces: 4 });
+
+const flatBusInfo = (busData) => {
+    const bus = {
+        line: busData.Linea._text,
+        route: busData.Ruta._text,
+        minutes: busData.minutos._text,
+        meters: busData.metros._text
+    };
+
+    return bus;
+}
+
+const flatStopInfo = (stopData) => {
+    const stop = {
+        id: stopData._attributes.idparada,
+        name: stopData._attributes.nombre,
+        distance: stopData._attributes.distancia,
+        location: {
+            latitude: stopData._attributes.latitud,
+            longitude: stopData._attributes.longitud
+        }
+    }
+
+    return stop;
+}
+
 
 module.exports = Moeder;
