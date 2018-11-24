@@ -1,0 +1,17 @@
+{
+  "name": "vitrapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "strong-soap": "^1.14.0",
+    "xml-js": "^1.6.8"
+  }
+}
